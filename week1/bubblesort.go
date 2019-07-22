@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func main() {
+func notmain() {
 	strInput, err := getInputString("Enter a sequence of numbers separated by space: ")
 	if err != nil {
 		log.Fatal(err)
