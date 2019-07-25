@@ -1,25 +1,44 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"math"
+	"os"
+	"strconv"
 )
 
-func GenDisplaceFn(initS0 float64, vel float64, accel float64) func(float64) float64{
-	var getDisplacement = func (t float64) float64{
-		return ((0.5*accel*t*t) + vel*t + initS0)
-	}
-	
-	return getDisplacement
+func main() {
+
+	var a, vo, so float64
+
+	scanner := bufio.NewScanner(os.Stdin)
+	//asking for values
+	fmt.Print("What's the acceleration (a)? \t")
+	scanner.Scan()
+	a, _ = strconv.ParseFloat(scanner.Text(), 64)
+
+	fmt.Print("What's the initial velocity (v0)? \t")
+	scanner.Scan()
+	vo, _ = strconv.ParseFloat(scanner.Text(), 64)
+
+	fmt.Print("What's the initial displacement (s0)? \t")
+	scanner.Scan()
+	so, _ = strconv.ParseFloat(scanner.Text(), 64)
+
+	fmt.Print("What's the time ('t' in seconds...)? \t")
+	scanner.Scan()
+	t, _ := strconv.ParseFloat(scanner.Text(), 64)
+
+	fn := GenDisplaceFn(a, vo, so)
+
+	fmt.Println(fn(t))
+
 }
 
-func main(){
-	var s0, vel, accel, t float64
-	fmt.Printf("Please enter the value for initial distance, velocity, acceleartion and time: ");
-	_ , err := fmt.Scanf("%f %f %f %f",&s0, &vel, &accel, &t)
-	if err != nil {
-		fmt.Println(err)
+func GenDisplaceFn(a, v0, s0 float64) func(t float64) float64 {
+	fn := func(t float64) float64 {
+		return ((a * math.Pow(t, 2) / 2) + (v0 * t) + s0)
 	}
-
-	var getTheDistanceFromTime = GenDisplaceFn(s0, vel, accel)
-	fmt.Printf("%f",(getTheDistanceFromTime(t)))
+	return fn
 }
