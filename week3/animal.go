@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"reflect"
+	"strings"
 )
 
 type Animal struct {
@@ -50,10 +52,22 @@ func getString(prompt string) (string, error) {
 	return "", errors.New("Buffer empty")
 }
 
+func parseInput(cmds string) (string, string) {
+	cmd := strings.Fields(cmds)
+	return strings.ToLower(cmd[0]), strings.Title(strings.ToLower(cmd[1]))
+}
+
 func main() {
 	m := initData()
 
-	name, _ := getString("Enter an animal: ")
-	a := m[name]
-	println(a.Eat())
+	fmt.Println("At the prompt, enter a string consisting of one of the following animals \n    (cow, bird, snake)\n followed by one of these methods \n    (eat, move, speak):")
+
+	for true {
+		cmds, _ := getString("> ")
+		animalName, methodName := parseInput(cmds)
+
+		a := m[animalName]
+		result := reflect.ValueOf(&a).MethodByName(methodName).Call([]reflect.Value{})
+		fmt.Printf("%s.%s: %s\n", animalName, methodName, result)
+	}
 }
